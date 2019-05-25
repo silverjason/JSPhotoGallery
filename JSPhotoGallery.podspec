@@ -30,9 +30,10 @@ Pod::Spec.new do |s|
   #  Not including the public_header_files will make all headers public.
 
   s.source_files  = ["JSPhotoGallery/JSPhotoGallery.h",
-    "JSPhotoGallery/**/*.swift",
-    "JSPhotoGallery/**/*.storyboard",
-    "JSPhotoGallery/**/*.xib"]
+    "JSPhotoGallery/**/*.swift"]
+
+  s.resource_bundles = ["JSPhotoGallery/**/*.{storyboard,xib}"]
+  s.resources = ["JSPhotoGallery/**/*.{storyboard,xib}"]
 
   s.public_header_files = ["JSPhotoGallery/JSPhotoGallery.h"]
 
