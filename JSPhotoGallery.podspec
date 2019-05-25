@@ -29,7 +29,11 @@ Pod::Spec.new do |s|
   #  For header files it will include any header in the folder.
   #  Not including the public_header_files will make all headers public.
 
-  s.source_files  = ["JSPhotoGallery/**/*.swift", "JSPhotoGallery/*.swift", "JSPhotoGallery/JSPhotoGallery.h"]
+  s.source_files  = ["JSPhotoGallery/JSPhotoGallery.h",
+    "JSPhotoGallery/**/*.swift",
+    "JSPhotoGallery/**/*.storyboard",
+    "JSPhotoGallery/**/*.xib"]
+
   s.public_header_files = ["JSPhotoGallery/JSPhotoGallery.h"]
 
   s.dependency "Kingfisher", "~> 5.5.0"
