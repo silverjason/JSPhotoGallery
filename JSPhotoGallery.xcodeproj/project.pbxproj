@@ -12,6 +12,8 @@
 		391EB2482297560200056733 /* PhotoGallery.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 391EB2472297560200056733 /* PhotoGallery.storyboard */; };
 		391EB24B2297560C00056733 /* PhotoGalleryFullScreenCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 391EB2492297560C00056733 /* PhotoGalleryFullScreenCVCell.swift */; };
 		391EB24C2297560C00056733 /* PhotoGalleryFullScreenCVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 391EB24A2297560C00056733 /* PhotoGalleryFullScreenCVCell.xib */; };
+		392B26802298D23800C205AD /* UICVCellLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 392B267F2298D23800C205AD /* UICVCellLoading.swift */; };
+		392B26822298D24C00C205AD /* UIVCLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 392B26812298D24C00C205AD /* UIVCLoading.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +24,8 @@
 		391EB2472297560200056733 /* PhotoGallery.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = PhotoGallery.storyboard; sourceTree = "<group>"; };
 		391EB2492297560C00056733 /* PhotoGalleryFullScreenCVCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoGalleryFullScreenCVCell.swift; sourceTree = "<group>"; };
 		391EB24A2297560C00056733 /* PhotoGalleryFullScreenCVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PhotoGalleryFullScreenCVCell.xib; sourceTree = "<group>"; };
+		392B267F2298D23800C205AD /* UICVCellLoading.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UICVCellLoading.swift; sourceTree = "<group>"; };
+		392B26812298D24C00C205AD /* UIVCLoading.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIVCLoading.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,14 +58,48 @@
 		391EB23C2297554900056733 /* JSPhotoGallery */ = {
 			isa = PBXGroup;
 			children = (
-				391EB2492297560C00056733 /* PhotoGalleryFullScreenCVCell.swift */,
-				391EB24A2297560C00056733 /* PhotoGalleryFullScreenCVCell.xib */,
-				391EB2472297560200056733 /* PhotoGallery.storyboard */,
-				391EB245229755ED00056733 /* PhotoGalleryVC.swift */,
+				392B267E2298D1CD00C205AD /* Protocols */,
+				392B267B2298D1A800C205AD /* CVCells */,
+				392B267C2298D1B400C205AD /* Storyboards */,
+				392B267D2298D1BF00C205AD /* ViewControllers */,
 				391EB23D2297554900056733 /* JSPhotoGallery.h */,
 				391EB23E2297554900056733 /* Info.plist */,
 			);
 			path = JSPhotoGallery;
+			sourceTree = "<group>";
+		};
+		392B267B2298D1A800C205AD /* CVCells */ = {
+			isa = PBXGroup;
+			children = (
+				391EB2492297560C00056733 /* PhotoGalleryFullScreenCVCell.swift */,
+				391EB24A2297560C00056733 /* PhotoGalleryFullScreenCVCell.xib */,
+			);
+			path = CVCells;
+			sourceTree = "<group>";
+		};
+		392B267C2298D1B400C205AD /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				391EB2472297560200056733 /* PhotoGallery.storyboard */,
+			);
+			path = Storyboards;
+			sourceTree = "<group>";
+		};
+		392B267D2298D1BF00C205AD /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				391EB245229755ED00056733 /* PhotoGalleryVC.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		392B267E2298D1CD00C205AD /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				392B267F2298D23800C205AD /* UICVCellLoading.swift */,
+				392B26812298D24C00C205AD /* UIVCLoading.swift */,
+			);
+			path = Protocols;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -146,6 +184,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				391EB246229755ED00056733 /* PhotoGalleryVC.swift in Sources */,
+				392B26822298D24C00C205AD /* UIVCLoading.swift in Sources */,
+				392B26802298D23800C205AD /* UICVCellLoading.swift in Sources */,
 				391EB24B2297560C00056733 /* PhotoGalleryFullScreenCVCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

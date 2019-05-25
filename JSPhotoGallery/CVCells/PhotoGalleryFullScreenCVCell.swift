@@ -8,8 +8,9 @@
 
 import UIKit
 
-class PhotoGalleryFullScreenCVCell: UICollectionViewCell, UICVCellLoading {
+class PhotoGalleryFullScreenCVCell: UICollectionViewCell {
 
+    static let identifier = "PhotoGalleryFullScreenCVCell"
     
     @IBOutlet weak var imageView: UIImageView!
     
