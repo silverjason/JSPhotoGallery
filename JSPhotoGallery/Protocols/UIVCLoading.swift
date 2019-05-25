@@ -24,7 +24,7 @@ extension UIVCLoading where Self : UIViewController {
     }
     
     static func instantiate() -> Self {
-        let storyboard = UIStoryboard(name: Self.storyboard.rawValue, bundle: Bundle.main)
+        let storyboard = UIStoryboard(name: Self.storyboard.rawValue, bundle: Bundle(identifier: "org.cocoapods.JSPhotoGallery"))
         return storyboard.instantiateViewController(withIdentifier: Self.storyboardID) as! Self
     }
 

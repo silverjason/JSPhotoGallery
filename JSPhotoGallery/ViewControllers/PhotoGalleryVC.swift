@@ -131,7 +131,7 @@ public class PhotoGalleryVC: UIViewController, UIVCLoading {
         collectionView?.dataSource = self
         collectionView?.delegate = self
         collectionView?.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        collectionView?.register(UINib(nibName: PhotoGalleryFullScreenCVCell.nibName, bundle: Bundle.main), forCellWithReuseIdentifier: PhotoGalleryFullScreenCVCell.identifier)
+        collectionView?.register(UINib(nibName: PhotoGalleryFullScreenCVCell.nibName, bundle: Bundle(identifier: "org.cocoapods.JSPhotoGallery")), forCellWithReuseIdentifier: PhotoGalleryFullScreenCVCell.identifier)
     }
     
     private func configureFlowLayout() {
