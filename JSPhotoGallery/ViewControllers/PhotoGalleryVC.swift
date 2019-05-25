@@ -13,11 +13,12 @@ protocol PhotoGalleryDelegate: class {
     func photoGalleryVC(_ photoGalleryVC: PhotoGalleryVC, didTapDelete index: Int)
 }
 
+
+
 class PhotoGalleryVC: UIViewController, UIVCLoading {
     
 
-    // MARK: - UIVCLoading
-    static var storyboard: Storyboard = .photoGallery
+    static let storyboardName = "PhotoGallery"
     
     
     //MARK: - IBOutlets
