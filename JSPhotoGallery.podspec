@@ -32,7 +32,6 @@ Pod::Spec.new do |s|
   s.source_files  = ["JSPhotoGallery/JSPhotoGallery.h",
     "JSPhotoGallery/**/*.swift"]
 
-  s.resource_bundles = ["JSPhotoGallery/**/*.{storyboard,xib}"]
   s.resources = ["JSPhotoGallery/**/*.{storyboard,xib}"]
 
   s.public_header_files = ["JSPhotoGallery/JSPhotoGallery.h"]
