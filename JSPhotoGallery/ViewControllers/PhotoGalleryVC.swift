@@ -18,7 +18,7 @@ protocol PhotoGalleryDelegate: class {
 class PhotoGalleryVC: UIViewController, UIVCLoading {
     
 
-    static let storyboardName = "PhotoGallery"
+    static let storyboard: Storyboard = .photoGallery
     
     
     //MARK: - IBOutlets

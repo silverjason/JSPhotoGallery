@@ -30,7 +30,8 @@ extension UIVCLoading where Self : UIViewController {
     
     static func instantiateNC(isPortrait: Bool = true, isNavigationBarHidden: Bool = true) -> UINavigationController {
         let vc = Self.instantiate()
-        let nc = isPortrait ? PortraitNC(rootViewController: vc) : UINavigationController(rootViewController: vc)
+        let nc = UINavigationController(rootViewController: vc)
+        nc.shouldAutorotate = false
         nc.isNavigationBarHidden = isNavigationBarHidden
         return nc
     }

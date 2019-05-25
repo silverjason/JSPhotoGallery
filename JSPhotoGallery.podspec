@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
 
   s.platform     = :ios, "12.0"
 
-  s.source       = { :git => "https://github.com/silverjason/JSPhotoGallery.git", :tag => "1.0" }
+  s.source       = { :git => "https://github.com/silverjason/JSPhotoGallery.git", :tag => "1.0", :branch => "1.0" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
