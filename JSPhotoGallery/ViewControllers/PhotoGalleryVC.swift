@@ -9,27 +9,48 @@
 import UIKit
 import Kingfisher
 
-protocol PhotoGalleryDelegate: class {
+public protocol PhotoGalleryDelegate: class {
     func photoGalleryVC(_ photoGalleryVC: PhotoGalleryVC, didTapDelete index: Int)
 }
 
-
+//MARK: - Presentation
 extension UIViewController {
     
-    public func presentGallery(urlStrings: [String], animated: Bool = true, completion: (() -> Void)? = nil) {
+    public func presentGallery(imageURLs: [URL]? = nil,
+                               images: [UIImage]? = nil,
+                               initialIndex: Int = 0,
+                               shouldStartInFullScreen: Bool = true,
+                               delegate: PhotoGalleryDelegate? = nil,
+                               animated: Bool = true,
+                               completion: (() -> Void)? = nil) {
         
-        let photoGallery = PhotoGalleryVC.instantiate()
-        photoGallery.imageURLStrings = urlStrings
+        if imageURLs == nil && images == nil {
+            assertionFailure("List of image urls and images cannot both be nil")
+        }
+        
+        let storyboard = UIStoryboard(name: PhotoGalleryVC.Constants.storyboardName,
+                                      bundle: Bundle(identifier: PhotoGalleryVC.Constants.bundleID))
+        let photoGallery = storyboard.instantiateViewController(withIdentifier: PhotoGalleryVC.Constants.storyboardID) as! PhotoGalleryVC
+        
+        photoGallery.imageURLs = imageURLs
+        photoGallery.images = images
+        photoGallery.initialIndex = initialIndex
+        photoGallery.shouldStartInFullScreen = shouldStartInFullScreen
+        photoGallery.delegate = delegate
+        
         let nc = UINavigationController(rootViewController: photoGallery)
-        present(nc, animated: true, completion: completion)
+        present(nc, animated: animated, completion: completion)
     }
 }
 
-public class PhotoGalleryVC: UIViewController, UIVCLoading {
+public class PhotoGalleryVC: UIViewController {
     
-    
-    static let storyboard: Storyboard = .photoGallery
-    
+    //MARK: - Constants
+    struct Constants {
+        static let storyboardName = "PhotoGallery"
+        static let storyboardID = "PhotoGalleryVC"
+        static let bundleID = "org.cocoapods.JSPhotoGallery"
+    }
     
     //MARK: - IBOutlets
     @IBOutlet weak var collectionView: UICollectionView!
@@ -38,17 +59,12 @@ public class PhotoGalleryVC: UIViewController, UIVCLoading {
     @IBOutlet weak var pageControl: UIPageControl!
     
     //MARK: - API
-    var imageURLStrings = [String]() {
-        didSet {
-            imageURLList.removeAll()
-            imageURLStrings.forEach({ imageURLList.append(($0, nil)) })
-        }
-    }
-    
-    var imageURLList: [(urlString: String, image: UIImage?)] = []
-    
-    var initialIndex: Int!
+    var imageURLs: [URL]?
+    var images: [UIImage]?
+    var initialIndex: Int = 1
+    var shouldStartInFullScreen = true
     var isDeleteEnabled = false
+    
     weak var delegate: PhotoGalleryDelegate?
     
     //MARK: - Private Properties
@@ -56,6 +72,7 @@ public class PhotoGalleryVC: UIViewController, UIVCLoading {
     private let imageViewTag = 100
     private var lastContentOffset: CGFloat = 5
     private let fullScreenImageViewPadding: CGFloat = 5
+    private var numberOfImages = 0
     private var paddingPerItem: CGFloat {
         return isFullScreenMode ? 0.0 : 5.0
     }
@@ -91,7 +108,7 @@ public class PhotoGalleryVC: UIViewController, UIVCLoading {
     override public func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if let initialIndex = initialIndex {
+        if shouldStartInFullScreen {
             showFullScreenForIndex(initialIndex)
         } else {
             isFullScreenMode = false
@@ -102,7 +119,18 @@ public class PhotoGalleryVC: UIViewController, UIVCLoading {
         
         configureCollectionView()
         configureButtonVisibilty()
-        pageControl?.numberOfPages = imageURLList.count
+        
+        if let imageURLs = imageURLs {
+            numberOfImages = imageURLs.count
+        } else if let images = images {
+            numberOfImages = images.count
+        }
+        
+        if initialIndex > numberOfImages {
+            assertionFailure("Initial index out of bounds")
+        }
+        
+        pageControl?.numberOfPages = numberOfImages
     }
     
     
@@ -121,6 +149,7 @@ public class PhotoGalleryVC: UIViewController, UIVCLoading {
     
     private func configureButtonVisibilty() {
         
+        navigationController?.setNavigationBarHidden(true, animated: false)
         showGridButton?.isHidden = !isFullScreenMode
         deleteButton?.isHidden = !isFullScreenMode || !isDeleteEnabled
         pageControl?.isHidden = !isFullScreenMode
@@ -131,7 +160,10 @@ public class PhotoGalleryVC: UIViewController, UIVCLoading {
         collectionView?.dataSource = self
         collectionView?.delegate = self
         collectionView?.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        collectionView?.register(UINib(nibName: PhotoGalleryFullScreenCVCell.nibName, bundle: Bundle(identifier: "org.cocoapods.JSPhotoGallery")), forCellWithReuseIdentifier: PhotoGalleryFullScreenCVCell.identifier)
+        
+        collectionView?.register(UINib(nibName: PhotoGalleryFullScreenCVCell.Constants.nibName,
+                                       bundle: Bundle(identifier: PhotoGalleryFullScreenCVCell.Constants.bundleID)),
+                                 forCellWithReuseIdentifier: PhotoGalleryFullScreenCVCell.Constants.identifier)
     }
     
     private func configureFlowLayout() {
@@ -305,7 +337,7 @@ extension PhotoGalleryVC: UICollectionViewDataSource {
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return imageURLList.count
+        return numberOfImages
     }
     
     
@@ -314,10 +346,10 @@ extension PhotoGalleryVC: UICollectionViewDataSource {
         
         if isFullScreenMode {
             
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoGalleryFullScreenCVCell.identifier, for: indexPath) as! PhotoGalleryFullScreenCVCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoGalleryFullScreenCVCell.Constants.identifier, for: indexPath) as! PhotoGalleryFullScreenCVCell
             
             if let imageView = cell.imageView {
-                loadImageViewWithItem(imageView, item: imageURLList[indexPath.row])
+                loadImageViewWithItem(imageView, indexPath: indexPath)
                 
                 imageView.gestureRecognizers?.removeAll()
                 
@@ -341,14 +373,14 @@ extension PhotoGalleryVC: UICollectionViewDataSource {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
             
             if let imageView = cell.contentView.viewWithTag(imageViewTag) as? ImageView {
-                loadImageViewWithItem(imageView, item: imageURLList[indexPath.row])
+                loadImageViewWithItem(imageView, indexPath: indexPath)
                 imageView.bounds = cell.bounds
             } else {
                 let imageView = ImageView(frame: cell.bounds)
                 imageView.clipsToBounds = true
                 imageView.contentMode = .scaleAspectFill
                 imageView.tag = imageViewTag
-                loadImageViewWithItem(imageView, item: imageURLList[indexPath.row])
+                loadImageViewWithItem(imageView, indexPath: indexPath)
                 cell.contentView.addSubview(imageView)
             }
             return cell
@@ -357,12 +389,12 @@ extension PhotoGalleryVC: UICollectionViewDataSource {
         
     }
     
-    private func loadImageViewWithItem(_ imageView: UIImageView, item: (urlString: String, image: UIImage?)) {
+    private func loadImageViewWithItem(_ imageView: UIImageView, indexPath: IndexPath) {
         
-        if let image = item.image {
-            imageView.image = image
-        } else {
-            imageView.kf.setImage(with: URL(string: item.urlString))
+        if let imageURLs = imageURLs {
+            imageView.kf.setImage(with: imageURLs[indexPath.row])
+        } else if let images = images {
+            imageView.image = images[indexPath.row]
         }
         
     }

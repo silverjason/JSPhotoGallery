@@ -8,10 +8,17 @@
 
 import UIKit
 
-class PhotoGalleryFullScreenCVCell: UICollectionViewCell, UICVCellLoading {
-
+class PhotoGalleryFullScreenCVCell: UICollectionViewCell {
     
+    
+    //MARK: - Constants
+    struct Constants {
+        static let bundleID = "org.cocoapods.JSPhotoGallery"
+        static let identifier = "PhotoGalleryFullScreenCVCell"
+        static let nibName = "PhotoGalleryFullScreenCVCell"
+    }
+    
+    //MARK: - IBOutlets
     @IBOutlet weak var imageView: UIImageView!
     
-
 }
