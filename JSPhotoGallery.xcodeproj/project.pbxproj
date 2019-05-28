@@ -54,7 +54,6 @@
 		391EB23C2297554900056733 /* JSPhotoGallery */ = {
 			isa = PBXGroup;
 			children = (
-				392B267E2298D1CD00C205AD /* Protocols */,
 				392B267B2298D1A800C205AD /* CVCells */,
 				392B267C2298D1B400C205AD /* Storyboards */,
 				392B267D2298D1BF00C205AD /* ViewControllers */,
@@ -87,13 +86,6 @@
 				391EB245229755ED00056733 /* PhotoGalleryVC.swift */,
 			);
 			path = ViewControllers;
-			sourceTree = "<group>";
-		};
-		392B267E2298D1CD00C205AD /* Protocols */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Protocols;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
