@@ -9,17 +9,48 @@
 import UIKit
 import Kingfisher
 
-protocol PhotoGalleryDelegate: class {
+public protocol PhotoGalleryDelegate: class {
     func photoGalleryVC(_ photoGalleryVC: PhotoGalleryVC, didTapDelete index: Int)
 }
 
-
-
-class PhotoGalleryVC: UIViewController, UIVCLoading {
+//MARK: - Presentation
+extension UIViewController {
     
+    public func presentGallery(imageURLs: [URL]? = nil,
+                               images: [UIImage]? = nil,
+                               initialIndex: Int = 0,
+                               shouldStartInFullScreen: Bool = true,
+                               delegate: PhotoGalleryDelegate? = nil,
+                               animated: Bool = true,
+                               completion: (() -> Void)? = nil) {
+        
+        if imageURLs == nil && images == nil {
+            assertionFailure("List of image urls and images cannot both be nil")
+        }
+        
+        let storyboard = UIStoryboard(name: PhotoGalleryVC.Constants.storyboardName,
+                                      bundle: Bundle(identifier: PhotoGalleryVC.Constants.bundleID))
+        let photoGallery = storyboard.instantiateViewController(withIdentifier: PhotoGalleryVC.Constants.storyboardID) as! PhotoGalleryVC
+        
+        photoGallery.imageURLs = imageURLs
+        photoGallery.images = images
+        photoGallery.initialIndex = initialIndex
+        photoGallery.shouldStartInFullScreen = shouldStartInFullScreen
+        photoGallery.delegate = delegate
+        
+        let nc = UINavigationController(rootViewController: photoGallery)
+        present(nc, animated: animated, completion: completion)
+    }
+}
 
-    static let storyboardName = "PhotoGallery"
+public class PhotoGalleryVC: UIViewController {
     
+    //MARK: - Constants
+    struct Constants {
+        static let storyboardName = "PhotoGallery"
+        static let storyboardID = "PhotoGalleryVC"
+        static let bundleID = "org.cocoapods.JSPhotoGallery"
+    }
     
     //MARK: - IBOutlets
     @IBOutlet weak var collectionView: UICollectionView!
@@ -28,24 +59,20 @@ class PhotoGalleryVC: UIViewController, UIVCLoading {
     @IBOutlet weak var pageControl: UIPageControl!
     
     //MARK: - API
-    var imageURLStrings = [String]() {
-        didSet {
-            imageURLList.removeAll()
-            imageURLStrings.forEach({ imageURLList.append(($0, nil)) })
-        }
-    }
-    
-    var imageURLList: [(urlString: String, image: UIImage?)] = []
-    
-    var initialIndex: Int!
+    var imageURLs: [URL]?
+    var images: [UIImage]?
+    var initialIndex: Int = 1
+    var shouldStartInFullScreen = true
     var isDeleteEnabled = false
+    
     weak var delegate: PhotoGalleryDelegate?
-
+    
     //MARK: - Private Properties
     private let reuseIdentifier = "Cell"
     private let imageViewTag = 100
     private var lastContentOffset: CGFloat = 5
     private let fullScreenImageViewPadding: CGFloat = 5
+    private var numberOfImages = 0
     private var paddingPerItem: CGFloat {
         return isFullScreenMode ? 0.0 : 5.0
     }
@@ -56,7 +83,7 @@ class PhotoGalleryVC: UIViewController, UIVCLoading {
     
     private var currentPageIndex: Int {
         guard let collectionView = collectionView, isFullScreenMode else { return 0 }
-
+        
         return Int(collectionView.contentOffset.x / collectionView.bounds.width)
     }
     
@@ -72,16 +99,16 @@ class PhotoGalleryVC: UIViewController, UIVCLoading {
         }
     }
     
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         
         configureVC()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
+    override public func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if let initialIndex = initialIndex {
+        if shouldStartInFullScreen {
             showFullScreenForIndex(initialIndex)
         } else {
             isFullScreenMode = false
@@ -92,36 +119,51 @@ class PhotoGalleryVC: UIViewController, UIVCLoading {
         
         configureCollectionView()
         configureButtonVisibilty()
-        pageControl?.numberOfPages = imageURLList.count
+        
+        if let imageURLs = imageURLs {
+            numberOfImages = imageURLs.count
+        } else if let images = images {
+            numberOfImages = images.count
+        }
+        
+        if initialIndex > numberOfImages {
+            assertionFailure("Initial index out of bounds")
+        }
+        
+        pageControl?.numberOfPages = numberOfImages
     }
     
-
+    
     
     private func showFullScreenForIndex(_ index: Int) {
         
         isFullScreenMode = true
         DispatchQueue.main.async {
             self.collectionView?.scrollToItem(at: IndexPath(item: index, section: 0),
-                                         at: .centeredHorizontally,
-                                         animated: false)
+                                              at: .centeredHorizontally,
+                                              animated: false)
             self.pageControl?.currentPage = self.currentPageIndex
         }
-
+        
     }
-
-    private func configureButtonVisibilty() {
     
+    private func configureButtonVisibilty() {
+        
+        navigationController?.setNavigationBarHidden(true, animated: false)
         showGridButton?.isHidden = !isFullScreenMode
         deleteButton?.isHidden = !isFullScreenMode || !isDeleteEnabled
         pageControl?.isHidden = !isFullScreenMode
     }
     
     private func configureCollectionView() {
-
+        
         collectionView?.dataSource = self
         collectionView?.delegate = self
         collectionView?.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        collectionView?.register(UINib(nibName: PhotoGalleryFullScreenCVCell.nibName, bundle: Bundle.main), forCellWithReuseIdentifier: PhotoGalleryFullScreenCVCell.identifier)
+        
+        collectionView?.register(UINib(nibName: PhotoGalleryFullScreenCVCell.Constants.nibName,
+                                       bundle: Bundle(identifier: PhotoGalleryFullScreenCVCell.Constants.bundleID)),
+                                 forCellWithReuseIdentifier: PhotoGalleryFullScreenCVCell.Constants.identifier)
     }
     
     private func configureFlowLayout() {
@@ -134,11 +176,11 @@ class PhotoGalleryVC: UIViewController, UIVCLoading {
         flowLayout.minimumInteritemSpacing = paddingPerItem
         flowLayout.minimumLineSpacing = paddingPerItem
         flowLayout.sectionInset = UIEdgeInsets(top: paddingPerItem, left: paddingPerItem, bottom: paddingPerItem, right: paddingPerItem)
-
+        
     }
     
     
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         if isFullScreenMode {
             pageControl?.currentPage = currentPageIndex
         }
@@ -168,7 +210,7 @@ class PhotoGalleryVC: UIViewController, UIVCLoading {
 
 extension PhotoGalleryVC: UIGestureRecognizerDelegate {
     
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
     
@@ -181,7 +223,7 @@ extension PhotoGalleryVC: UIGestureRecognizerDelegate {
         if  [.changed, .began].contains(gesture.state) {
             
             collectionView.isScrollEnabled = false
-
+            
             //Zoom limit
             if imageView.frame.height > collectionView.frame.height * 3 && gesture.scale >= 1 {
                 return
@@ -203,18 +245,18 @@ extension PhotoGalleryVC: UIGestureRecognizerDelegate {
             } else {
                 imageView.transform = .identity
             }
-
+            
             gesture.scale = 1
         }
     }
     
-
+    
     
     @objc func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
         
         guard let collectionView = collectionView, let cell = collectionView.visibleCells.first as? PhotoGalleryFullScreenCVCell,
             let imageView = cell.imageView else { return }
-    
+        
         let originX = round(imageView.frame.origin.x)
         let maxX = round(imageView.frame.maxX)
         
@@ -231,7 +273,7 @@ extension PhotoGalleryVC: UIGestureRecognizerDelegate {
             if originX == fullScreenImageViewPadding || maxX == cell.contentView.frame.maxX - fullScreenImageViewPadding {
                 performTranslation(imageView: imageView, gesture: gesture)
             }
-
+            
         } else if gesture.state == .ended {
             
             UIView.animate(withDuration: 0.3, animations: {
@@ -262,7 +304,7 @@ extension PhotoGalleryVC: UIGestureRecognizerDelegate {
         gesture.setTranslation(.zero, in: imageView)
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
         guard let collectionView = collectionView, let cell = collectionView.visibleCells.first as? PhotoGalleryFullScreenCVCell,
             let imageView = cell.imageView else { return }
@@ -270,12 +312,12 @@ extension PhotoGalleryVC: UIGestureRecognizerDelegate {
         // If imageView is to the right and user swipes right - keep collectionview scroll enabled
         if round(imageView.frame.origin.x) >= self.fullScreenImageViewPadding && collectionView.contentOffset.x < lastContentOffset  {
             collectionView.isScrollEnabled = true
-
+            
             // If imageView is to the left and user swipes left - keep collectionview scroll enabled
         } else if round(imageView.frame.maxX) <= cell.contentView.frame.maxX - self.fullScreenImageViewPadding && collectionView.contentOffset.x > lastContentOffset {
             collectionView.isScrollEnabled = true
-
-        // Disable scroll on collectionview which will allow to pan image the other way
+            
+            // Disable scroll on collectionview which will allow to pan image the other way
         } else {
             collectionView.isScrollEnabled = false
         }
@@ -289,56 +331,56 @@ extension PhotoGalleryVC: UIGestureRecognizerDelegate {
 // MARK: - UICollectionViewDataSource
 extension PhotoGalleryVC: UICollectionViewDataSource {
     
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return imageURLList.count
+        return numberOfImages
     }
     
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-
+        
         if isFullScreenMode {
             
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoGalleryFullScreenCVCell.identifier, for: indexPath) as! PhotoGalleryFullScreenCVCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoGalleryFullScreenCVCell.Constants.identifier, for: indexPath) as! PhotoGalleryFullScreenCVCell
             
             if let imageView = cell.imageView {
-                loadImageViewWithItem(imageView, item: imageURLList[indexPath.row])
+                loadImageViewWithItem(imageView, indexPath: indexPath)
                 
                 imageView.gestureRecognizers?.removeAll()
                 
                 let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(handlePinchGesture(_:)))
                 let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
-
+                
                 pinchGesture.delegate = self
                 panGesture.delegate = self
-
+                
                 panGesture.minimumNumberOfTouches = 1
                 panGesture.maximumNumberOfTouches = 2
                 
                 imageView.addGestureRecognizer(pinchGesture)
                 imageView.addGestureRecognizer(panGesture)
-
+                
             }
             return cell
-
+            
         } else {
             
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
             
             if let imageView = cell.contentView.viewWithTag(imageViewTag) as? ImageView {
-                loadImageViewWithItem(imageView, item: imageURLList[indexPath.row])
+                loadImageViewWithItem(imageView, indexPath: indexPath)
                 imageView.bounds = cell.bounds
             } else {
                 let imageView = ImageView(frame: cell.bounds)
                 imageView.clipsToBounds = true
                 imageView.contentMode = .scaleAspectFill
                 imageView.tag = imageViewTag
-                loadImageViewWithItem(imageView, item: imageURLList[indexPath.row])
+                loadImageViewWithItem(imageView, indexPath: indexPath)
                 cell.contentView.addSubview(imageView)
             }
             return cell
@@ -347,12 +389,12 @@ extension PhotoGalleryVC: UICollectionViewDataSource {
         
     }
     
-    private func loadImageViewWithItem(_ imageView: UIImageView, item: (urlString: String, image: UIImage?)) {
+    private func loadImageViewWithItem(_ imageView: UIImageView, indexPath: IndexPath) {
         
-        if let image = item.image {
-            imageView.image = image
-        } else {
-            imageView.kf.setImage(with: URL(string: item.urlString))
+        if let imageURLs = imageURLs {
+            imageView.kf.setImage(with: imageURLs[indexPath.row])
+        } else if let images = images {
+            imageView.image = images[indexPath.row]
         }
         
     }
@@ -360,7 +402,7 @@ extension PhotoGalleryVC: UICollectionViewDataSource {
 
 extension PhotoGalleryVC: UICollectionViewDelegate {
     
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         guard let cell = cell as? PhotoGalleryFullScreenCVCell else { return }
         cell.imageView.transform = .identity
         cell.imageView.frame = cell.imageView.bounds
@@ -372,27 +414,27 @@ extension PhotoGalleryVC: UICollectionViewDelegate {
 
 // MARK: - Collection View Flow Layout Delegate
 extension PhotoGalleryVC: UICollectionViewDelegateFlowLayout {
-
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+    
+    public func collectionView(_ collectionView: UICollectionView,
+                               layout collectionViewLayout: UICollectionViewLayout,
+                               sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         let flowLayout = collectionViewLayout as! UICollectionViewFlowLayout
         
         
         let width = collectionView.frame.width - flowLayout.sectionInset.left - flowLayout.sectionInset.right - flowLayout.minimumInteritemSpacing * (itemsPerRow - 1)
-
+        
         if isFullScreenMode {
             return CGSize(width: width, height: collectionView.bounds.height * 0.8)
         } else {
             let itemSize = width / itemsPerRow
             return CGSize(width: itemSize, height: itemSize)
         }
-
+        
     }
     
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         if !isFullScreenMode {
             showFullScreenForIndex(indexPath.row)
