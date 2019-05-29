@@ -17,8 +17,12 @@ public protocol JSPhotoGalleryDelegate: class {
 }
 
 public extension JSPhotoGalleryDelegate {
-    func photoGalleryVC(_ photoGalleryVC: JSPhotoGalleryVC, didTapTopLeftButton button: UIButton) {}
-    func photoGalleryVC(_ photoGalleryVC: JSPhotoGalleryVC, didTapTopRightButton button: UIButton) {}
+    func photoGalleryVC(_ photoGalleryVC: JSPhotoGalleryVC, didTapTopLeftButton button: UIButton) {
+        photoGalleryVC.dismiss(animated: true)
+    }
+    func photoGalleryVC(_ photoGalleryVC: JSPhotoGalleryVC, didTapTopRightButton button: UIButton) {
+        photoGalleryVC.showGrid()
+    }
     func photoGalleryVC(_ photoGalleryVC: JSPhotoGalleryVC, didTapBottomRightButton button: UIButton) {}
     func photoGalleryVC(_ photoGalleryVC: JSPhotoGalleryVC, didTapBottomLeftButton button: UIButton) {}
 }
@@ -225,7 +229,7 @@ public class JSPhotoGalleryVC: UIViewController {
     }
     
     @IBAction func bottomRightButtonTapped(_ button: UIButton) {
-        delegate?.photoGalleryVC(self, didTapRightButton: button)
+        delegate?.photoGalleryVC(self, didTapBottomRightButton: button)
     }
     
     @IBAction func bottomLeftButtonTapped(_ button: UIButton) {

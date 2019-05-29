@@ -13,7 +13,7 @@
         <!--Photo GalleryVC-->
         <scene sceneID="fxW-8j-Xc3">
             <objects>
-                <viewController storyboardIdentifier="PhotoGalleryVC" id="KYQ-wx-8i9" customClass="JSPhotoGalleryVC" customModule="JSPhotoGallery" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="JSPhotoGalleryVC" id="KYQ-wx-8i9" customClass="JSPhotoGalleryVC" customModule="JSPhotoGallery" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="kZg-rK-WWP">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
