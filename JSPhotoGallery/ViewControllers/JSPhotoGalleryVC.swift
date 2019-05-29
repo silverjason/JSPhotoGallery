@@ -10,17 +10,17 @@ import UIKit
 import Kingfisher
 
 public protocol JSPhotoGalleryDelegate: class {
-    public func photoGalleryVC(_ photoGalleryVC: JSPhotoGalleryVC, didTapTopLeftButton button: UIButton)
-    public func photoGalleryVC(_ photoGalleryVC: JSPhotoGalleryVC, didTapTopRightButton button: UIButton)
-    public func photoGalleryVC(_ photoGalleryVC: JSPhotoGalleryVC, didTapBottomRightButton button: UIButton)
-    public func photoGalleryVC(_ photoGalleryVC: JSPhotoGalleryVC, didTapBottomLeftButton button: UIButton)
+    func photoGalleryVC(_ photoGalleryVC: JSPhotoGalleryVC, didTapTopLeftButton button: UIButton)
+    func photoGalleryVC(_ photoGalleryVC: JSPhotoGalleryVC, didTapTopRightButton button: UIButton)
+    func photoGalleryVC(_ photoGalleryVC: JSPhotoGalleryVC, didTapBottomRightButton button: UIButton)
+    func photoGalleryVC(_ photoGalleryVC: JSPhotoGalleryVC, didTapBottomLeftButton button: UIButton)
 }
 
 public extension JSPhotoGalleryDelegate {
-    public func photoGalleryVC(_ photoGalleryVC: JSPhotoGalleryVC, didTapTopLeftButton button: UIButton) {}
-    public func photoGalleryVC(_ photoGalleryVC: JSPhotoGalleryVC, didTapTopRightButton button: UIButton) {}
-    public func photoGalleryVC(_ photoGalleryVC: JSPhotoGalleryVC, didTapBottomRightButton button: UIButton) {}
-    public func photoGalleryVC(_ photoGalleryVC: JSPhotoGalleryVC, didTapBottomLeftButton button: UIButton) {}
+    func photoGalleryVC(_ photoGalleryVC: JSPhotoGalleryVC, didTapTopLeftButton button: UIButton) {}
+    func photoGalleryVC(_ photoGalleryVC: JSPhotoGalleryVC, didTapTopRightButton button: UIButton) {}
+    func photoGalleryVC(_ photoGalleryVC: JSPhotoGalleryVC, didTapBottomRightButton button: UIButton) {}
+    func photoGalleryVC(_ photoGalleryVC: JSPhotoGalleryVC, didTapBottomLeftButton button: UIButton) {}
 }
 
 //MARK: - Presentation
@@ -204,7 +204,7 @@ public class JSPhotoGalleryVC: UIViewController {
     }
     
     
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         if isFullScreenMode {
             pageControl?.currentPage = currentPageIndex
         }
@@ -225,7 +225,7 @@ public class JSPhotoGalleryVC: UIViewController {
     }
     
     @IBAction func bottomRightButtonTapped(_ button: UIButton) {
-        delegate?.photoGalleryVC(self, didBottomRightButton: button)
+        delegate?.photoGalleryVC(self, didTapRightButton: button)
     }
     
     @IBAction func bottomLeftButtonTapped(_ button: UIButton) {
