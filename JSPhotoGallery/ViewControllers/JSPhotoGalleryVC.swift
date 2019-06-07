@@ -27,16 +27,25 @@ public extension JSPhotoGalleryDelegate {
     func photoGalleryVC(_ photoGalleryVC: JSPhotoGalleryVC, didTapBottomLeftButton button: UIButton) {}
 }
 
-//MARK: - Presentation
-extension UIViewController {
+
+public struct JSPhotoGallery {
     
-    public func presentGallery(imageURLs: [URL]? = nil,
-                               images: [UIImage]? = nil,
-                               initialIndex: Int = 0,
-                               shouldStartInFullScreen: Bool = true,
-                               delegate: JSPhotoGalleryDelegate? = nil,
-                               animated: Bool = true,
-                               completion: (() -> Void)? = nil) {
+    public static var settings = Settings()
+    
+    public struct Settings {
+        public var backgroundColor: UIColor = .white
+        public var navBackgroundColor: UIColor = .white
+        public var navTitleColor: UIColor = .white
+        public var navTitle: String = "Photos"
+    }
+    
+    public static func create(imageURLs: [URL]? = nil,
+                              images: [UIImage]? = nil,
+                              initialIndex: Int = 0,
+                              shouldStartInFullScreen: Bool = true,
+                              delegate: JSPhotoGalleryDelegate? = nil,
+                              animated: Bool = true,
+                              completion: (() -> Void)? = nil) -> UINavigationController {
         
         if imageURLs == nil && images == nil {
             assertionFailure("List of image urls and images cannot both be nil")
@@ -52,20 +61,7 @@ extension UIViewController {
         photoGallery.shouldStartInFullScreen = shouldStartInFullScreen
         photoGallery.delegate = delegate
         
-        let nc = UINavigationController(rootViewController: photoGallery)
-        present(nc, animated: animated, completion: completion)
-    }
-}
-
-public struct JSPhotoGallery {
-    
-    public static var settings = Settings()
-    
-    public struct Settings {
-        public var backgroundColor: UIColor = .white
-        public var navBackgroundColor: UIColor = .white
-        public var navTitleColor: UIColor = .white
-        public var navTitle: String = "Photos"
+        return UINavigationController(rootViewController: photoGallery)
     }
 }
 
