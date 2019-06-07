@@ -8,14 +8,14 @@
 
 import UIKit
 
-class PhotoGalleryFullScreenCVCell: UICollectionViewCell {
+class JSPhotoGalleryFullScreenCVCell: UICollectionViewCell {
     
     
     //MARK: - Constants
     struct Constants {
         static let bundleID = "org.cocoapods.JSPhotoGallery"
-        static let identifier = "PhotoGalleryFullScreenCVCell"
-        static let nibName = "PhotoGalleryFullScreenCVCell"
+        static let identifier = "JSPhotoGalleryFullScreenCVCell"
+        static let nibName = "JSPhotoGalleryFullScreenCVCell"
     }
     
     //MARK: - IBOutlets

@@ -46,5 +46,6 @@ end
   # ――― **REMINDERS** ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 
   #'pod cache clean --all' IS YOUR FRIEND
+  # check that tag matches spec and git 
   #'pod spec lint'
   # Make sure to push your pod and point to correct branch in s.source
