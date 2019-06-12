@@ -45,6 +45,7 @@ public class JSPhotoGalleryVC: UIViewController {
     @IBOutlet weak var topLeftButton: UIButton!
     @IBOutlet weak var bottomLeftButton: UIButton!
     @IBOutlet weak var bottomRightButton: UIButton!
+    @IBOutlet weak var navTitleLabel: UILabel!
     
     //MARK: - API
     var imageURLs: [URL]?
@@ -92,6 +93,7 @@ public class JSPhotoGalleryVC: UIViewController {
         super.viewDidLoad()
         
         configureVC()
+        configureAppearence()
     }
     
     override public func viewWillAppear(_ animated: Bool) {
@@ -106,10 +108,9 @@ public class JSPhotoGalleryVC: UIViewController {
     
     private func configureVC() {
         
-        navigationController?.setNavigationBarHidden(true, animated: false)
-
         configureCollectionView()
-        configureButtonVisibilty()
+        
+        pageControl?.isHidden = !isFullScreenMode
         
         if let imageURLs = imageURLs {
             numberOfImages = imageURLs.count
@@ -122,6 +123,16 @@ public class JSPhotoGalleryVC: UIViewController {
         }
         
         pageControl?.numberOfPages = numberOfImages
+    }
+    
+    private func configureAppearence() {
+        
+        navigationController?.setNavigationBarHidden(true, animated: false)
+
+        collectionView?.backgroundColor = JSPhotoGallery.settings.backgroundColor
+        navTitleLabel?.backgroundColor = JSPhotoGallery.settings.navBackgroundColor
+        navTitleLabel?.textColor = JSPhotoGallery.settings.navTitleColor
+        navTitleLabel?.text = JSPhotoGallery.settings.navTitle
     }
     
     
@@ -138,10 +149,6 @@ public class JSPhotoGalleryVC: UIViewController {
         
     }
     
-    private func configureButtonVisibilty() {
-        
-        pageControl?.isHidden = !isFullScreenMode
-    }
     
     private func configureCollectionView() {
         

@@ -137,6 +137,7 @@
                         <outlet property="bottomLeftButton" destination="5tu-2a-O6u" id="E2f-ej-qqI"/>
                         <outlet property="bottomRightButton" destination="Jdz-Mv-wbV" id="B4b-0Q-oGx"/>
                         <outlet property="collectionView" destination="6F4-jX-s1c" id="jF0-QO-GvP"/>
+                        <outlet property="navTitleLabel" destination="V2U-sl-TTn" id="Lqc-89-ORC"/>
                         <outlet property="pageControl" destination="XUo-cV-d94" id="BS1-xZ-tQN"/>
                         <outlet property="topLeftButton" destination="wLZ-ND-oHp" id="ytJ-3O-3fE"/>
                         <outlet property="topRightButton" destination="ctB-77-JLY" id="A7q-N6-W5X"/>
