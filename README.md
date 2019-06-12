@@ -22,11 +22,6 @@ Instantiating the gallery
 Presenting the gallery
 
             present(navController, animated: true)
-
-Customizing buttons
-By default the top left button is used to dismiss and the bottom right button is to switch grid modes
-
-
             
 Appearance Settings
 
@@ -34,4 +29,7 @@ Appearance Settings
             JSPhotoGallery.settings.navBackgroundColor = .black
             JSPhotoGallery.settings.navTitleColor = .white
             JSPhotoGallery.settings.navTitle = "Images"
+            
+Customizing buttons - *Coming soon*
+
 
