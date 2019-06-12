@@ -4,14 +4,14 @@ Pod::Spec.new do |s|
 
 
   s.name         = "JSPhotoGallery"
-  s.version      = "1.0.1"
+  s.version      = "1.0.2"
   s.summary      = "A library used to display images in a gallery view as well as in a thumbnail summary grid."
 
   s.description  = "I could not find another image viewer library that met all my needs. I decided to 
   create a basic image viewer that was customizable, easy to use, and had a full view as well
   as a grid summary view of all the images as thumbnails"
 
-  s.homepage     = "http://raywenderlich.com"
+  s.homepage     = "https://github.com/silverjason/JSPhotoGallery"
 
   s.license = "MIT"
 
@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
 
   s.platform     = :ios, "12.0"
 
-  s.source       = { :git => "https://github.com/silverjason/JSPhotoGallery.git", :tag => "1.0.1", :branch => "master" }
+  s.source       = { :git => "https://github.com/silverjason/JSPhotoGallery.git", :tag => "1.0.2", :branch => "master" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #

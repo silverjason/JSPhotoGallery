@@ -85,7 +85,7 @@ public class JSPhotoGalleryVC: UIViewController {
             configureFlowLayout()
             collectionView.reloadData()
             
-            configureButtonVisibilty()
+            pageControl?.isHidden = !isFullScreenMode
         }
     }
     
